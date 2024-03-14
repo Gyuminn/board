@@ -6,6 +6,32 @@ import org.kb.board.dto.PostDto;
 import org.kb.board.dto.UserDto;
 
 public interface PostService {
-    // 게시글 등록
+    // DTO -> Entity로 변환해주는 메서드
+    default PostEntity dtoToEntity(PostDto dto) {
+        UserEntity userEntity = UserEntity.builder()
+                .userId(dto.getUserId()).build();
+
+        PostEntity postEntity = PostEntity.builder()
+                .writer(userEntity)
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .build();
+        return postEntity;
+    }
+
+    // Entity -> DTO로 변환해주는 메서드
+    default PostDto entityToDTO(PostEntity postEntity, UserEntity userEntity, Long replyCnt) {
+        PostDto dto = PostDto.builder()
+                .postId(postEntity.getPostId())
+                .userId(userEntity.getUserId())
+                .title(postEntity.getTitle())
+                .content(postEntity.getContent())
+                .regDate(postEntity.getRegDate())
+                .modDate(postEntity.getModDate())
+                .replyCnt(replyCnt.intValue())
+                .build();
+        return dto;
+    }
+        // 게시글 등록
     Long register(PostDto postDto);
 }
