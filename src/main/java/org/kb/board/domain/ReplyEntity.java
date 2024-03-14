@@ -25,7 +25,8 @@ public class ReplyEntity extends BaseEntity{
     private String content;
 
     @Builder
-    public ReplyEntity(PostEntity post, String replyer, String content) {
+    public ReplyEntity(Long replyId, PostEntity post, String replyer, String content) {
+        this.replyId = replyId;
         this.post = post;
         this.replyer = replyer;
         this.content = content;

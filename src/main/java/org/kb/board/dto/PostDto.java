@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
 public class PostDto {
     private Long postId;
 
+    private Long userId;
+
     private String title;
 
     private String content;
-
-    private String writerNickName;
 
     private LocalDateTime regDate;
 
@@ -30,11 +30,11 @@ public class PostDto {
     private int replyCnt;
 
     @Builder
-    public PostDto(Long postId, String title, String content, String writerNickName, LocalDateTime regDate, LocalDateTime modDate, int replyCnt) {
+    public PostDto(Long postId, Long userId, String title, String content, LocalDateTime regDate, LocalDateTime modDate, int replyCnt) {
         this.postId = postId;
+        this.userId = userId;
         this.title = title;
         this.content = content;
-        this.writerNickName = writerNickName;
         this.regDate = regDate;
         this.modDate = modDate;
         this.replyCnt = replyCnt;

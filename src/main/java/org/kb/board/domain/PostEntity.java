@@ -32,7 +32,8 @@ public class PostEntity extends BaseEntity{
     private String content;
 
     @Builder
-    public PostEntity(UserEntity writer, String title, String content) {
+    public PostEntity(Long postId, UserEntity writer, String title, String content) {
+        this.postId = postId;
         this.writer = writer;
         this.title = title;
         this.content = content;
