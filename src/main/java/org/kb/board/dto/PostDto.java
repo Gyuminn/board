@@ -1,6 +1,8 @@
 package org.kb.board.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 // 그런데 필드에 꼭 다 설정하지 않아도 된다.
 // 직렬화: 기본생성자 필요 없음, getter 필요, setter 불가능
 // 역직렬화: 기본생성자 필요함, getter or setter 중 하나만 있으면 됨. (동작 방식: 기본 생성자로 객체 생성하고 getter나 setter로 필드 가져옴. 근데 getter가 나음.)
+@Getter
 public class PostDto {
     private Long postId;
 
@@ -26,4 +29,14 @@ public class PostDto {
 
     private int replyCnt;
 
+    @Builder
+    public PostDto(Long postId, String title, String content, String writerNickName, LocalDateTime regDate, LocalDateTime modDate, int replyCnt) {
+        this.postId = postId;
+        this.title = title;
+        this.content = content;
+        this.writerNickName = writerNickName;
+        this.regDate = regDate;
+        this.modDate = modDate;
+        this.replyCnt = replyCnt;
+    }
 }
