@@ -14,7 +14,7 @@ public class ReplyEntity extends BaseEntity{
     @Column(name = "reply_id")
     private Long replyId;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private PostEntity post;
 

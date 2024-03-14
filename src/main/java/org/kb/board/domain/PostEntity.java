@@ -14,7 +14,7 @@ public class PostEntity extends BaseEntity{
     @Column(name = "post_id")
     private Long postId;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     // 게시글은 회원을 알 수 있다. 회원은 게시글을 알 수 없다.
     // 없으므로 단방향(객체관계-메서드)이지만, 테이블 관계는 항상 양방향(서로 조인 가능)이다.
     // 그런데 한 사람이 쓴 글들을 보고 싶으니까 @OneToMany를 UserEntity에 추가해보자. -> 그럼 이제 흔히 말하는 양방향이 된다.
