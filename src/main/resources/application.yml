@@ -1,0 +1,25 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/board
+    username: root
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    properties:
+      hibernate:
+        # set format
+        format_sql: true
+        # print sql
+        show_sql: true
+
+logging:
+  level:
+    # check binding parameter(? value) of query log
+    org.hibernate.type.descriptor.sql: trace
