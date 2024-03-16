@@ -2,6 +2,8 @@ package org.kb.board.service;
 
 import org.kb.board.domain.PostEntity;
 import org.kb.board.domain.UserEntity;
+import org.kb.board.dto.PageRequestDto;
+import org.kb.board.dto.PageResponseDto;
 import org.kb.board.dto.PostDto;
 import org.kb.board.dto.UserDto;
 
@@ -32,6 +34,9 @@ public interface PostService {
                 .build();
         return dto;
     }
-        // 게시글 등록
+    // 게시글 등록
     Long register(PostDto postDto);
+
+    // 게시글 목록 출력하기
+    PageResponseDto<PostDto, Object[]> getList(PageRequestDto pageRequestDto);
 }

@@ -19,6 +19,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
 
 
+    // 게시글 등록하기
     public Long register(PostDto postDto) {
         log.info("Service - register: {}", postDto);
         UserEntity userEntity = UserEntity.builder()
@@ -34,4 +35,7 @@ public class PostServiceImpl implements PostService {
         postRepository.save(postEntity);
         return postEntity.getPostId();
     }
+
+    // 게시글 목록 보기
+
 }
