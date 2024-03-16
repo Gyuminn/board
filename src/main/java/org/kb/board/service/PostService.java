@@ -45,4 +45,7 @@ public interface PostService {
 
     // 게시글 삭제하기
     void removeWithReplies(Long postId);
+
+    // 게시글 수정하기
+    Long modify(PostDto postDto);
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
@@ -76,5 +77,29 @@ public class PostServiceImpl implements PostService {
     public void removeWithReplies(Long postId) {
         replyRepository.deleteByPostId(postId);
         postRepository.deleteById(postId);
+    }
+
+    // 게시글 수정하기
+    @Transactional
+    public Long modify(PostDto postDto) {
+        // JPA에서는 삽입과 수정 메서드가 동일
+        // upsert(있으면 수정 없으면 삽입)를 하고자 하는 경우는 save를 호출하면 되지만
+        // update를 하고자 하면 데이터가 있는지 확인한 후 수행하는 것이 좋다.
+        if (postDto.getPostId() == null) {
+            return 0L;
+        }
+
+        // 데이터 존재 여부를 확인
+        Optional<PostEntity> postEntity = postRepository.findById(postDto.getPostId());
+
+        // 존재하는 경우
+        if (postEntity.isPresent()) {
+            postEntity.get().changeTitle(postDto.getTitle());
+            postEntity.get().changeContent(postDto.getContent());
+            postRepository.save(postEntity.get());
+            return postEntity.get().getPostId();
+        } else {
+            return 0L;
+        }
     }
 }

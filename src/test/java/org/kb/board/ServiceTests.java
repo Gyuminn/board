@@ -48,4 +48,17 @@ public class ServiceTests {
     public void deletePost() {
         postService.removeWithReplies(99L);
     }
+
+    // 게시글 수정하기
+    @Test
+    public void updatePost() {
+        PostDto postDto = PostDto.builder()
+                .postId(50L)
+                .title("수정된 제목입니다.")
+                .content("수정된 본문입니다.")
+                .build();
+        Long postId = postService.modify(postDto);
+
+        System.out.println(postId);
+    }
 }

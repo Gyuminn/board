@@ -39,4 +39,17 @@ public class PostEntity extends BaseEntity{
         this.content = content;
     }
 
+    // title을 수정하는 메서드
+    public void changeTitle(String title) {
+        if (title == null || title.trim().length() == 0) {
+            this.title = "무제";
+            return;
+        }
+        this.title = title;
+    }
+
+    public void changeContent(String content) {
+        this.content = content;
+    }
+
 }
