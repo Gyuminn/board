@@ -42,4 +42,10 @@ public class ServiceTests {
         PostDto postDto = postService.get(postId);
         System.out.println(postDto);
     }
+
+    // 게시글 삭제하기
+    @Test
+    public void deletePost() {
+        postService.removeWithReplies(99L);
+    }
 }

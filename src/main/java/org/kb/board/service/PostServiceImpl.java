@@ -10,9 +10,11 @@ import org.kb.board.dto.PageResponseDto;
 import org.kb.board.dto.PostDto;
 import org.kb.board.dto.UserDto;
 import org.kb.board.repository.PostRepository;
+import org.kb.board.repository.ReplyRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.function.Function;
@@ -25,6 +27,8 @@ import java.util.function.Function;
 // 의존성 주입이란 클래스간의 결합도를 유연하게 하고 외부로부터 주입받아 사용한다.
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
+
+    private final ReplyRepository replyRepository;
 
 
     // 게시글 등록하기
@@ -65,5 +69,12 @@ public class PostServiceImpl implements PostService {
         List<Object[]> result = postRepository.getPostEntityByPostId(postId);
 
         return entityToDTO((PostEntity) result.get(0)[0], (UserEntity) result.get(0)[1], (Long) result.get(0)[2]);
+    }
+
+    // 게시글 삭제하기
+    @Transactional
+    public void removeWithReplies(Long postId) {
+        replyRepository.deleteByPostId(postId);
+        postRepository.deleteById(postId);
     }
 }

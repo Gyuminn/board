@@ -12,6 +12,7 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<PostEntity, Long> {
     // Post 가져올 때 Writer 정보도 같이 가져오기
     // Spring Data Jpa 쿼리 메소드 기능
+    // 영속성 컨텍스트를 거쳐 쓰기지연 SQL이 아니라 바로 데이터베이스에 질의한다.
     // @Query(”select 찾을것 from 엔티티이름 left outer join 엔티티안의참조속성 참조하는테이블의별칭”)
     // 결과가 한 건 이상이면 컬렉션 인터페이스를 사용하고 단건이면 반환 타입을 지정한다.
     @Query("select p, w from PostEntity p left join p.writer w where p.postId=:postId")
@@ -33,4 +34,6 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
     // Post 상세 보기
     @Query("select p, w, count(r) from PostEntity p left join p.writer w left join ReplyEntity r on r.post = p where p.postId=:postId")
     List<Object[]> getPostEntityByPostId(@Param("postId") Long postId);
+
+
 }

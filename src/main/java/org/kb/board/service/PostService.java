@@ -43,4 +43,6 @@ public interface PostService {
     // 게시글 상세보기
     PostDto get(Long postId);
 
+    // 게시글 삭제하기
+    void removeWithReplies(Long postId);
 }
