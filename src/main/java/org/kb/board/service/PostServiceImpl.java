@@ -3,6 +3,7 @@ package org.kb.board.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kb.board.domain.PostEntity;
+import org.kb.board.domain.ReplyEntity;
 import org.kb.board.domain.UserEntity;
 import org.kb.board.dto.PageRequestDto;
 import org.kb.board.dto.PageResponseDto;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Slf4j
@@ -56,5 +58,12 @@ public class PostServiceImpl implements PostService {
                 );
 
         return new PageResponseDto<>(result, fn);
+    }
+
+    // 게시글 상세보기
+    public PostDto get(Long postId) {
+        List<Object[]> result = postRepository.getPostEntityByPostId(postId);
+
+        return entityToDTO((PostEntity) result.get(0)[0], (UserEntity) result.get(0)[1], (Long) result.get(0)[2]);
     }
 }

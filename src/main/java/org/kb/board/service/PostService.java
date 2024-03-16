@@ -39,4 +39,8 @@ public interface PostService {
 
     // 게시글 목록 출력하기
     PageResponseDto<PostDto, Object[]> getList(PageRequestDto pageRequestDto);
+
+    // 게시글 상세보기
+    PostDto get(Long postId);
+
 }

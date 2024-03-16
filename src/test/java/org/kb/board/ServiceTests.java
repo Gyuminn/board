@@ -34,4 +34,12 @@ public class ServiceTests {
 
         System.out.println(result.toString());
     }
+
+    // 게시글 상세보기
+    @Test
+    public void getPost() {
+        Long postId = 100L;
+        PostDto postDto = postService.get(postId);
+        System.out.println(postDto);
+    }
 }

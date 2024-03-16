@@ -31,6 +31,6 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
     Page<Object[]> getPostEntityWithWriterAndReplyCount(Pageable pageable);
 
     // Post 상세 보기
-    @Query("select p, w, r from PostEntity p left join p.writer w left join ReplyEntity r on r.post = p where p.postId=:postId")
+    @Query("select p, w, count(r) from PostEntity p left join p.writer w left join ReplyEntity r on r.post = p where p.postId=:postId")
     List<Object[]> getPostEntityByPostId(@Param("postId") Long postId);
 }
