@@ -4,10 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kb.board.domain.PostEntity;
 import org.kb.board.domain.UserEntity;
+import org.kb.board.dto.PageRequestDto;
+import org.kb.board.dto.PageResponseDto;
 import org.kb.board.dto.PostDto;
 import org.kb.board.dto.UserDto;
 import org.kb.board.repository.PostRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.function.Function;
 
 @Slf4j
 @Service
@@ -37,5 +43,18 @@ public class PostServiceImpl implements PostService {
     }
 
     // 게시글 목록 보기
+    public PageResponseDto<PostDto, Object[]> getList(PageRequestDto pageRequestDto) {
+        log.info("PageRequestDto : {}", pageRequestDto);
 
+        // Entity를 Dto로 변경하는 람다 인스턴스 생성
+        Function<Object[], PostDto> fn = (en -> entityToDTO((PostEntity) en[0], (UserEntity) en[1], (Long) en[2]));
+
+        // 페이지 목록 보기 요청
+        Page<Object[]> result = postRepository
+                .getPostEntityWithWriterAndReplyCount(
+                        pageRequestDto.getPageable(Sort.by("postId").descending())
+                );
+
+        return new PageResponseDto<>(result, fn);
+    }
 }

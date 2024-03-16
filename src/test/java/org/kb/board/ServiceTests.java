@@ -1,6 +1,8 @@
 package org.kb.board;
 
 import org.junit.jupiter.api.Test;
+import org.kb.board.dto.PageRequestDto;
+import org.kb.board.dto.PageResponseDto;
 import org.kb.board.dto.PostDto;
 import org.kb.board.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ public class ServiceTests {
     @Autowired
     private PostService postService;
 
+    // 게시글 등록 테스트
     @Test
     public void registerTest() {
         PostDto postDto = PostDto.builder()
@@ -21,5 +24,14 @@ public class ServiceTests {
         Long postId = postService.register(postDto);
 
         System.out.println(postId);
+    }
+
+    // 게시글 목록보기 테스트
+    @Test
+    public void getPageListTest() {
+        PageRequestDto pageRequestDto = new PageRequestDto();
+        PageResponseDto<PostDto, Object[]> result = postService.getList(pageRequestDto);
+
+        System.out.println(result.toString());
     }
 }
