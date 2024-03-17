@@ -10,10 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.Charset;
 
@@ -42,5 +39,44 @@ public class PostController {
 
         return new ResponseEntity<>(dto, header, HttpStatus.OK);
     }
+
+    // 글 단건 조회
+    @GetMapping("/{postId}")
+    public ResponseEntity<ResponseDto<PostDto>> get(
+            @PathVariable Long postId
+    ) {
+        log.info("PostId: {}", postId);
+
+        ResponseDto<PostDto> dto = new ResponseDto<>();
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        PostDto newPostDto = postService.get(postId);
+        dto.setStatusCode(StatusEnum.OK);
+        dto.setMessage("글 단건 조회 성공");
+        dto.setData(newPostDto);
+
+        return new ResponseEntity<>(dto, header, HttpStatus.OK);
+    }
+
+    // 글 수정
+    @PostMapping("/update")
+    public ResponseEntity<ResponseDto<Long>> update(
+            @RequestBody PostDto postDto
+    ) {
+        log.info("PostDto: {}", postDto);
+
+        ResponseDto<Long> dto = new ResponseDto<>();
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        Long postId = postService.modify(postDto);
+        dto.setStatusCode(StatusEnum.OK);
+        dto.setMessage("글 수정 성공");
+        dto.setData(postId);
+
+        return new ResponseEntity<>(dto, header, HttpStatus.OK);
+    }
+
 
 }
