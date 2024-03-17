@@ -46,6 +46,7 @@ public class PostServiceImpl implements PostService {
                 .build();
 
         postRepository.save(postEntity);
+
         return postEntity.getPostId();
     }
 
