@@ -78,5 +78,22 @@ public class PostController {
         return new ResponseEntity<>(dto, header, HttpStatus.OK);
     }
 
+    // 글 삭제
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<ResponseDto<Long>> delete(@PathVariable Long postId) {
+        log.info("PostId: {}", postId);
+
+        ResponseDto<Long> dto = new ResponseDto<>();
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        postService.removeWithReplies(postId);
+        dto.setStatusCode(StatusEnum.OK);
+        dto.setMessage("글 삭제 성공");
+        dto.setData(postId);
+
+        return ResponseEntity.ok().headers(header).body(dto);
+    }
+
 
 }
