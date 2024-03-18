@@ -24,7 +24,7 @@ public class PageRequestDto {
 
     @Builder
     public PageRequestDto(int page, int size, String type, String keywords) {
-        this.page = page;
+        this.page = page ;
         this.size = size;
         this.type = type;
         this.keywords = keywords;

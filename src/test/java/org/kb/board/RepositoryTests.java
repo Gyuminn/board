@@ -173,4 +173,16 @@ public class RepositoryTests {
     public void testSearch1() {
         postRepository.search1();
     }
+
+    @Test
+    public void testSearch() {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("postId").descending()
+                .and(Sort.by("title").ascending()));
+
+        Page<Object[]> result = postRepository.searchPage("t", "1", pageable);
+
+        for (Object[] row : result.getContent()) {
+            System.out.println(Arrays.toString(row));
+        }
+    }
 }

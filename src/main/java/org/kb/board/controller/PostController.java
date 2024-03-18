@@ -3,6 +3,8 @@ package org.kb.board.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kb.board.domain.StatusEnum;
+import org.kb.board.dto.PageRequestDto;
+import org.kb.board.dto.PageResponseDto;
 import org.kb.board.dto.PostDto;
 import org.kb.board.dto.ResponseDto;
 import org.kb.board.service.PostService;
@@ -23,7 +25,7 @@ public class PostController {
     private final PostService postService;
 
     // 글 작성하기
-    @PostMapping("")
+    @PostMapping("/register")
     public ResponseEntity<ResponseDto<Long>> registerPost(@RequestBody PostDto postDto) {
         log.info("PostDto: {}", postDto);
 
@@ -36,6 +38,34 @@ public class PostController {
         dto.setStatusCode(StatusEnum.OK);
         dto.setMessage("글 작성 성공");
         dto.setData(postId);
+
+        return new ResponseEntity<>(dto, header, HttpStatus.OK);
+    }
+    // 글 다건 조회
+    @GetMapping( {"", "/list"})
+    public ResponseEntity<ResponseDto<PageResponseDto<PostDto, Object[]>>> getList(
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size,
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "keywords", required = false) String keywords
+    ) {
+        PageRequestDto pageRequestDto = PageRequestDto.builder()
+                .page(page == null ? 1 : (int) page)
+                .size(size == null ? 10 : (int) size)
+                .type(type)
+                .keywords(keywords)
+                .build();
+
+        log.info("PageRequestDto: {}", pageRequestDto);
+
+        ResponseDto<PageResponseDto<PostDto, Object[]>> dto = new ResponseDto<>();
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        PageResponseDto<PostDto, Object[]> newPageResponseDto = postService.getList(pageRequestDto);
+        dto.setStatusCode(StatusEnum.OK);
+        dto.setMessage("글 다건 조회 성공");
+        dto.setData(newPageResponseDto);
 
         return new ResponseEntity<>(dto, header, HttpStatus.OK);
     }

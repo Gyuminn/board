@@ -58,10 +58,16 @@ public class PostServiceImpl implements PostService {
         Function<Object[], PostDto> fn = (en -> entityToDTO((PostEntity) en[0], (UserEntity) en[1], (Long) en[2]));
 
         // 페이지 목록 보기 요청
+        /*
         Page<Object[]> result = postRepository
                 .getPostEntityWithWriterAndReplyCount(
                         pageRequestDto.getPageable(Sort.by("postId").descending())
                 );
+         */
+        // Querydsl 방법으로 변경
+        Page<Object[]> result = postRepository.searchPage(
+                pageRequestDto.getType(), pageRequestDto.getKeywords(), pageRequestDto.getPageable(Sort.by("postId").descending())
+        );
 
         return new PageResponseDto<>(result, fn);
     }
