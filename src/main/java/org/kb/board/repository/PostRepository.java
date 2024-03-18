@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface PostRepository extends JpaRepository<PostEntity, Long> {
+public interface PostRepository extends JpaRepository<PostEntity, Long>, SearchPostRepository{
     // Post 가져올 때 Writer 정보도 같이 가져오기
     // Spring Data Jpa 쿼리 메소드 기능
     // 영속성 컨텍스트를 거쳐 쓰기지연 SQL이 아니라 바로 데이터베이스에 질의한다.

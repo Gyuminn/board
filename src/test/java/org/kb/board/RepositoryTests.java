@@ -47,6 +47,7 @@ public class RepositoryTests {
     }
 
     @Test
+    @Transactional
     // 게시글 데이터 삽입
     public void insertPost() {
         for (int i = 0; i <= 100; i++) {
@@ -70,6 +71,7 @@ public class RepositoryTests {
         }
     }
     @Test
+    @Transactional
     public void insertReplies() {
         for (int i = 0; i <= 100; i++) {
             UserEntity userEntity = UserEntity.builder()
@@ -103,7 +105,7 @@ public class RepositoryTests {
     @Transactional
     // 게시글 1개를 가져오는 메서드
     public void readBoard() {
-        Optional<PostEntity> result = postRepository.findById(100L);
+        Optional<PostEntity> result = postRepository.findById(50L);
         PostEntity postEntity = result.get();
         System.out.println("postEntity :" + postEntity);
         System.out.println("postEntity writer: "+ postEntity.getWriter());
@@ -113,7 +115,7 @@ public class RepositoryTests {
     @Transactional
     // 댓글 1개를 가져오는 메서드
     public void readReply() {
-        Optional<ReplyEntity> result = replyRepository.findById(100L);
+        Optional<ReplyEntity> result = replyRepository.findById(50L);
         ReplyEntity replyEntity = result.get();
         System.out.println("replyEntity : " + replyEntity);
         System.out.println("replyEntity Post : " + replyEntity.getPost());
@@ -123,7 +125,7 @@ public class RepositoryTests {
     @Test
     // Post를 가져올 때 Writer도 가져오기
     public void joinTest1() {
-        List<Object[]> result = postRepository.getPostEntityWithWriter(100L);
+        List<Object[]> result = postRepository.getPostEntityWithWriter(50L);
         result.forEach(row -> System.out.println(Arrays.toString(row)));
         /*
         Object result = postRepository.getPostEntityWithWriter(100L);
@@ -143,7 +145,7 @@ public class RepositoryTests {
     @Test
     // Post를 가져올 떄 Reply도 가져오기
     public void joinTest2() {
-        List<Object[]> result = postRepository.getPostEntityWithReply(100L);
+        List<Object[]> result = postRepository.getPostEntityWithReply(50L);
         for (Object[] a : result) {
             System.out.println(Arrays.toString(a));
         }
@@ -161,9 +163,14 @@ public class RepositoryTests {
 
     @Test
     public void joinTest4() {
-        List<Object[]> result = postRepository.getPostEntityByPostId(100L);
+        List<Object[]> result = postRepository.getPostEntityByPostId(50L);
         for (Object[] a : result) {
             System.out.println(Arrays.toString(a));
         }
+    }
+
+    @Test
+    public void testSearch1() {
+        postRepository.search1();
     }
 }
