@@ -1,5 +1,6 @@
 package org.kb.board.repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPQLQuery;
 import org.kb.board.domain.*;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -32,9 +33,20 @@ public class SearchPostRepositoryImpl extends QuerydslRepositorySupport implemen
         // reply의 외래키는 post이다.
         jpqlQuery.leftJoin(replyEntity).on(replyEntity.post.eq(postEntity));
 
+        /*(
+        // 게시글 번호 별로 묶어서 postEntity와 userEntity의 emailId, 그리고 reply의 개수를 가져오기
+        jpqlQuery.select(postEntity, userEntity.emailId, replyEntity.count()).groupBy(postEntity);
         // jpql을 실행시킨 결과 가져오기
         // 실행 자체는 fetch가 하는 것이다.
         List<PostEntity> result = jpqlQuery.fetch();
+         */
+        // select 절에 조회 대상을 지정하는 것을 프로젝션이라 한다.
+        // 프로젝션 대상으로 여러 필드를 선택하면 QueryDsl은 기본적으로 com.mysema.query.Tuple이라는 Map과 비슷한 내부 타입을 사용한다.
+        // Java에서는 Tuple이라는 자료형이 제공되지 않지만 Spring 에서 제공을 한다.
+        JPQLQuery<Tuple> tuple = jpqlQuery.select(postEntity, userEntity.emailId, replyEntity.count());
+        tuple.groupBy(postEntity);
+        List<Tuple> result = tuple.fetch();
+
         System.out.println(result);
 
         return null;
