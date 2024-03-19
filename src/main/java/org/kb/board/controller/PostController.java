@@ -99,7 +99,7 @@ public class PostController {
 
         ResponseDto<Long> dto = new ResponseDto<>();
         HttpHeaders header = new HttpHeaders();
-        header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        header.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
 
         Long postId = postService.modify(postDto);
         dto.setStatusCode(StatusEnum.OK);
