@@ -4,14 +4,21 @@ import org.junit.jupiter.api.Test;
 import org.kb.board.dto.PageRequestDto;
 import org.kb.board.dto.PageResponseDto;
 import org.kb.board.dto.PostDto;
+import org.kb.board.dto.ReplyDto;
 import org.kb.board.service.PostService;
+import org.kb.board.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 @SpringBootTest
 public class ServiceTests {
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private ReplyService replyService;
 
     // 게시글 등록 테스트
     @Test
@@ -60,5 +67,23 @@ public class ServiceTests {
         Long postId = postService.modify(postDto);
 
         System.out.println(postId);
+    }
+
+    // 글 번호로 댓글 목록 가져오기
+    @Test
+    public void getReplyList() {
+        List<ReplyDto> list = replyService.getList(909L);
+        list.forEach(System.out::println);
+    }
+
+    // 댓글 삽입 테스트
+    @Test
+    public void insertReply() {
+        ReplyDto replyDto = ReplyDto.builder()
+                .content("댓글 삽입 테스트")
+                .replyer("테스트 하는 사람")
+                .postId(909L)
+                .build();
+        System.out.println(replyService.register(replyDto));
     }
 }

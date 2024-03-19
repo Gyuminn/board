@@ -47,7 +47,6 @@ public class RepositoryTests {
     }
 
     @Test
-    @Transactional
     // 게시글 데이터 삽입
     public void insertPost() {
         for (int i = 0; i <= 100; i++) {
@@ -57,6 +56,7 @@ public class RepositoryTests {
                     .nickname("nickname" + i)
                     .provider("TEST")
                     .build();
+            userRepository.save(userEntity);
 
 
             PostEntity postEntity = PostEntity.builder()
@@ -71,7 +71,6 @@ public class RepositoryTests {
         }
     }
     @Test
-    @Transactional
     public void insertReplies() {
         for (int i = 0; i <= 100; i++) {
             UserEntity userEntity = UserEntity.builder()
@@ -80,6 +79,7 @@ public class RepositoryTests {
                     .nickname("nickname" + i)
                     .provider("TEST")
                     .build();
+            userRepository.save(userEntity);
 
             PostEntity postEntity = PostEntity
                     .builder()
@@ -87,6 +87,7 @@ public class RepositoryTests {
                     .title("title..." + i)
                     .content("content..." + i)
                     .build();
+            postRepository.save(postEntity);
 
             ReplyEntity replyEntity = ReplyEntity
                     .builder()
