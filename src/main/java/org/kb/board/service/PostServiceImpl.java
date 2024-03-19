@@ -96,6 +96,7 @@ public class PostServiceImpl implements PostService {
             return 0L;
         }
 
+
         // 데이터 존재 여부를 확인
         Optional<PostEntity> postEntity = postRepository.findById(postDto.getPostId());
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -46,9 +47,19 @@ public class ReplyServiceImpl implements ReplyService{
     // 댓글 수정하기
     @Override
     public Long modify(ReplyDto replyDto) {
-        ReplyEntity replyEntity = dtoToEntity(replyDto);
-        replyRepository.save(replyEntity);
-        return replyEntity.getReplyId();
+        if (replyDto.getReplyId() == null) {
+            return 0L;
+        }
+
+        Optional<ReplyEntity> replyEntity = replyRepository.findById(replyDto.getReplyId());
+
+        if (replyEntity.isPresent()) {
+            replyEntity.get().changeContent(replyDto.getContent());
+            replyRepository.save(replyEntity.get());
+            return replyEntity.get().getReplyId();
+        } else {
+            return 0L;
+        }
     }
 
     // 댓글 삭제하기

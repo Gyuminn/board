@@ -31,16 +31,12 @@ public class ReplyEntity extends BaseEntity{
         this.replyer = replyer;
         this.content = content;
     }
-    /*
-    @Column(nullable = false)
-    private Long parentArticle;
 
-    @Column(nullable = false)
-    private Long level;
-
-    @Column(nullable = false)
-    private Long rootIndex;
-
-
-     */
+    public void changeContent(String content) {
+        if (content == null || content.trim().length() == 0) {
+            this.content = "없음";
+            return;
+        }
+        this.content = content;
+    }
 }
