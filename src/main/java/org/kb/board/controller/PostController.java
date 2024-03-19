@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @RestController
@@ -31,7 +32,7 @@ public class PostController {
 
         ResponseDto<Long> dto = new ResponseDto<>();
         HttpHeaders header = new HttpHeaders();
-        header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        header.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
 
         Long postId = postService.register(postDto);
 
