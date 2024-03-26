@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
@@ -45,11 +46,13 @@ public class CustomSecurityConfig {
         // 세션 생성 및 사용 여부에 대한 정책 설정
         // sessionCreationPolicy -> 정책을 설정한다.
         // SessionCreationPolicy.STATELESS -> 4가지 정책 중 하나로 스프링 시큐리팅가 생성하지 않고 존재해도 사용하지 않는다.(JWT와 같이 세션을 사용하지 않는 경우 사용)
+
+
         http.csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/signup", "/", "/login").permitAll()
+                        .requestMatchers("/signup", "/**", "/login").permitAll() // /** -> / 로 바꿔주어야 함.
                         .anyRequest().authenticated())
                 .logout((logout) -> logout.logoutSuccessUrl("/login")
                         .invalidateHttpSession(true))
