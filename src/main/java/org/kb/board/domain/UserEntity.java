@@ -35,14 +35,14 @@ public class UserEntity extends BaseEntity{
     @Column(length = 100, nullable = false)
     private String password;
 
-    @Column(length = 30, nullable = false)
+    @Column(length = 30)
     private String nickname;
 
     @Column(length = 100)
     private String introContent;
 
     // 로그인 방법 -> ENUM 타입으로 하면 어떨까? -> @Lob
-    @Column(nullable = false)
+    @Column(length = 30)
     private String provider;
 
     @Builder

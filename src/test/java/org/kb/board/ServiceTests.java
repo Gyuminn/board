@@ -5,15 +5,27 @@ import org.kb.board.dto.PageRequestDto;
 import org.kb.board.dto.PageResponseDto;
 import org.kb.board.dto.PostDto;
 import org.kb.board.dto.ReplyDto;
+import org.kb.board.repository.UserRepository;
 import org.kb.board.service.PostService;
 import org.kb.board.service.ReplyService;
+import org.kb.board.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.AuthenticationManager;
 
 import java.util.List;
 
 @SpringBootTest
 public class ServiceTests {
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserServiceImpl userService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @Autowired
     private PostService postService;
 
@@ -86,4 +98,6 @@ public class ServiceTests {
                 .build();
         System.out.println(replyService.register(replyDto));
     }
+
+
 }

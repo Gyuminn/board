@@ -13,11 +13,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 @SpringBootTest
 public class RepositoryTests {
@@ -30,6 +33,9 @@ public class RepositoryTests {
 
     @Autowired
     private ReplyRepository replyRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Test
     // 회원 데이터 삽입
@@ -185,5 +191,26 @@ public class RepositoryTests {
         for (Object[] row : result.getContent()) {
             System.out.println(Arrays.toString(row));
         }
+    }
+
+    @Test
+    public void testInsertUsers() {
+        IntStream.rangeClosed(1, 100).forEach(i -> {
+            UserEntity userEntity = UserEntity.builder()
+                    .emailId("security User" + i)
+                    .password(passwordEncoder.encode("1111"))
+                    .build();
+
+            userRepository.save(userEntity);
+        });
+    }
+
+    @Test
+    public void comparePwTest() {
+
+        UserEntity userEntity = userRepository.findById(100L).orElseThrow(() -> new UsernameNotFoundException("사용자 없다~"));
+
+        boolean result = passwordEncoder.matches("1111", userEntity.getPassword());
+        System.out.println(result);
     }
 }

@@ -2,9 +2,13 @@ package org.kb.board.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.kb.board.service.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,13 +19,39 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
+@EnableWebSecurity // 보안 설정 활성화
 public class CustomSecurityConfig {
 
+    private final UserServiceImpl userService;
+
+    // PasswordEncoder 빈을 생성
+    // 복호화가 불가능한 암호화를 수행해주는 클래스
+    // 복호화는 불가능하지만 비교는 가능.
+    // SpringBoot에서는 내부적으로 BCryptPasswordEncoder를 사용
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+
+    // 이전에는 WebSecurityConfigurerAdapter를 상속받아서 하는 시큐리티 설정이 있었는데 Deprecated 되었다. -> filter chain 사용
     // Spring Security에서 제공하는 인증, 인가를 위한 필터들의 모음.
     // http 요청 -> servlet contianer -> filter1 -> filter2 -> ... -> servlet -> controller
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        log.info("필터 환경 설정");
+        log.info("----------------configure------------------");
+
+        // 인증 관리자 설정
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(userService).passwordEncoder(passwordEncoder());
+        AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
+        http.authenticationManager(authenticationManager);
+
+
+
+
+
         // csrf
         // 공격자가 인증된 브라우저에 저장된 쿠키의 세션 정보를 활용하여 웹 서버에 사용자가 의도하지 않은 위조 요청을 전달하는 것.
         // REST API 개발 진행중이고 Session 기반 인증과 다르기 때문에 서버에 인증 정보를 보관하지 않고,
@@ -46,8 +76,6 @@ public class CustomSecurityConfig {
         // 세션 생성 및 사용 여부에 대한 정책 설정
         // sessionCreationPolicy -> 정책을 설정한다.
         // SessionCreationPolicy.STATELESS -> 4가지 정책 중 하나로 스프링 시큐리팅가 생성하지 않고 존재해도 사용하지 않는다.(JWT와 같이 세션을 사용하지 않는 경우 사용)
-
-
         http.csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -59,14 +87,5 @@ public class CustomSecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
-    }
-
-    // PasswordEncoder 빈을 생성
-    // 복호화가 불가능한 암호화를 수행해주는 클래스
-    // 복호화는 불가능하지만 비교는 가능.
-    // SpringBoot에서는 내부적으로 BCryptPasswordEncoder를 사용
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
