@@ -2,11 +2,13 @@ package org.kb.board.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 @Getter
+@ToString
 public class PageRequestDto {
     // 페이징 처리를 위한 속성
     private int page;

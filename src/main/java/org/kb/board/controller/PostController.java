@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 @RestController
 // @Controlelr + @ResponseBody
 @RequiredArgsConstructor
-@RequestMapping("/posts")
+@RequestMapping("/v1/posts")
 public class PostController {
     private final PostService postService;
 
@@ -43,7 +43,7 @@ public class PostController {
         return new ResponseEntity<>(dto, header, HttpStatus.OK);
     }
     // 글 다건 조회
-    @GetMapping( {"", "/list"})
+    @GetMapping( { "/list"})
     public ResponseEntity<ResponseDto<PageResponseDto<PostDto, Object[]>>> getList(
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size,

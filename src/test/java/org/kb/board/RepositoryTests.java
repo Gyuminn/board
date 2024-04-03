@@ -55,7 +55,8 @@ public class RepositoryTests {
     @Test
     // 게시글 데이터 삽입
     public void insertPost() {
-        for (int i = 0; i <= 100; i++) {
+        for (int i = 1; i <= 100; i++) {
+            /*
             UserEntity userEntity = UserEntity.builder()
                     .emailId("user" + i + "test.com")
                     .password("testPw")
@@ -63,7 +64,9 @@ public class RepositoryTests {
                     .provider("TEST")
                     .build();
             userRepository.save(userEntity);
+             */
 
+            UserEntity userEntity = userRepository.findUserEntityByEmailId("security User" + i);
 
             PostEntity postEntity = PostEntity.builder()
                     .writer(userEntity)

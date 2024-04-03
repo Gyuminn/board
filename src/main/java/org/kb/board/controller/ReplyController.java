@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/replies")
+@RequestMapping("/v1/replies")
 public class ReplyController {
     private final ReplyService replyService;
 

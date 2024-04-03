@@ -3,6 +3,7 @@ package org.kb.board.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kb.board.security.filter.APILoginFilter;
+import org.kb.board.security.filter.TokenCheckFilter;
 import org.kb.board.security.handler.APILoginSuccessHandler;
 import org.kb.board.service.UserServiceImpl;
 import org.kb.board.util.JWTUtil;
@@ -38,6 +39,11 @@ public class CustomSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // TokenCheckFilter 클래스의 객체를 생성해주는 메서드
+    private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil) {
+        return new TokenCheckFilter(jwtUtil);
+    }
+
 
     // 이전에는 WebSecurityConfigurerAdapter를 상속받아서 하는 시큐리티 설정이 있었는데 Deprecated 되었다. -> filter chain 사용
     // Spring Security에서 제공하는 인증, 인가를 위한 필터들의 모음.
@@ -59,6 +65,9 @@ public class CustomSecurityConfig {
 
         // 필터가 먼저 동작하도록 설정
         http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
+
+        // 토큰 검증 필터 적용
+        http.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         // APILoginFilter 다음에 동작할 핸들러 설정
         // 로그인 성공과 실패에 따른 핸들러를 설정할 수 있음.
@@ -93,10 +102,12 @@ public class CustomSecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/signup", "/**", "/login").permitAll() // /** -> / 로 바꿔주어야 함.
+                        .requestMatchers("/**").permitAll() // /** -> / 로 바꿔주어야 함.
                         .anyRequest().authenticated())
+                /*
                 .logout((logout) -> logout.logoutSuccessUrl("/login")
                         .invalidateHttpSession(true))
+                 */
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
