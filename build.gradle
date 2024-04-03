@@ -43,6 +43,10 @@ dependencies {
     // == JSON 문자열 해석 == //
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'com.google.code.gson:gson:2.9.1'
+
+    // == jwt 토큰 생성과 해석 == //
+    implementation 'javax.xml.bind:jaxb-api:2.3.0'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
 }
 
 tasks.named('test') {

@@ -23,3 +23,8 @@ logging:
   level:
     # check binding parameter(? value) of query log
     org.hibernate.type.descriptor.sql: trace
+
+com:
+  kb:
+    board:
+      secret: gyumin12345
