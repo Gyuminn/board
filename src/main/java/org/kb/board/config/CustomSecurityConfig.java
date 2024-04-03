@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.kb.board.security.filter.APILoginFilter;
 import org.kb.board.security.handler.APILoginSuccessHandler;
 import org.kb.board.service.UserServiceImpl;
+import org.kb.board.util.JWTUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 @EnableWebSecurity // 보안 설정 활성화
 public class CustomSecurityConfig {
+    private final JWTUtil jwtUtil;
 
     private final UserServiceImpl userService;
 
@@ -60,7 +62,7 @@ public class CustomSecurityConfig {
 
         // APILoginFilter 다음에 동작할 핸들러 설정
         // 로그인 성공과 실패에 따른 핸들러를 설정할 수 있음.
-        APILoginSuccessHandler successHandler = new APILoginSuccessHandler();
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil);
         apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
 
         // csrf
