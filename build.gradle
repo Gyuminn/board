@@ -39,6 +39,10 @@ dependencies {
     // == 스프링 시큐리티 == //
     implementation 'org.springframework.boot:spring-boot-starter-security'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    // == JSON 문자열 해석 == //
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'com.google.code.gson:gson:2.9.1'
 }
 
 tasks.named('test') {

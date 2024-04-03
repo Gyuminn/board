@@ -3,6 +3,7 @@ package org.kb.board.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kb.board.security.filter.APILoginFilter;
+import org.kb.board.security.handler.APILoginSuccessHandler;
 import org.kb.board.service.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,6 +58,10 @@ public class CustomSecurityConfig {
         // 필터가 먼저 동작하도록 설정
         http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
 
+        // APILoginFilter 다음에 동작할 핸들러 설정
+        // 로그인 성공과 실패에 따른 핸들러를 설정할 수 있음.
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler();
+        apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
 
         // csrf
         // 공격자가 인증된 브라우저에 저장된 쿠키의 세션 정보를 활용하여 웹 서버에 사용자가 의도하지 않은 위조 요청을 전달하는 것.
