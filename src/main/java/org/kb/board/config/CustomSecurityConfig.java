@@ -2,6 +2,7 @@ package org.kb.board.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.kb.board.security.filter.APILoginFilter;
 import org.kb.board.service.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
@@ -48,8 +50,12 @@ public class CustomSecurityConfig {
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
         http.authenticationManager(authenticationManager);
 
+        // 필터 등록 - 토큰을 생성할 때 동작
+        APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
+        apiLoginFilter.setAuthenticationManager(authenticationManager);
 
-
+        // 필터가 먼저 동작하도록 설정
+        http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
 
 
         // csrf
