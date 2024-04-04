@@ -8,32 +8,40 @@ import org.kb.board.dto.PageResponseDto;
 import org.kb.board.dto.PostDto;
 import org.kb.board.dto.ResponseDto;
 import org.kb.board.service.PostService;
+import org.kb.board.util.JWTUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 @Slf4j
 @RestController
 // @Controlelr + @ResponseBody
 @RequiredArgsConstructor
-@RequestMapping("/v1/posts")
+@RequestMapping("/v1")
 public class PostController {
     private final PostService postService;
+    private final JWTUtil jwtUtil;
 
     // 글 작성하기
-    @PostMapping("/register")
-    public ResponseEntity<ResponseDto<Long>> registerPost(@RequestBody PostDto postDto) {
+    @PostMapping("/auth/register")
+    public ResponseEntity<ResponseDto<Long>> registerPost(@RequestHeader("Authorization") String authorization, @RequestBody PostDto postDto) {
         log.info("PostDto: {}", postDto);
 
         ResponseDto<Long> dto = new ResponseDto<>();
         HttpHeaders header = new HttpHeaders();
         header.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
 
+        String accessToken = authorization.substring(7);
+        Map<String, Object> values = jwtUtil.validateToken(accessToken);
+
+        postDto.setEmailId(values.get("user_id").toString());
         Long postId = postService.register(postDto);
 
         dto.setStatusCode(StatusEnum.OK);
@@ -43,7 +51,7 @@ public class PostController {
         return new ResponseEntity<>(dto, header, HttpStatus.OK);
     }
     // 글 다건 조회
-    @GetMapping( { "/list"})
+    @GetMapping( { "/posts/list"})
     public ResponseEntity<ResponseDto<PageResponseDto<PostDto, Object[]>>> getList(
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size,
@@ -72,7 +80,7 @@ public class PostController {
     }
 
     // 글 단건 조회
-    @GetMapping("/{postId}")
+    @GetMapping("/posts/{postId}")
     public ResponseEntity<ResponseDto<PostDto>> get(
             @PathVariable Long postId
     ) {
@@ -91,8 +99,9 @@ public class PostController {
     }
 
     // 글 수정
-    @PostMapping("/update")
+    @PostMapping("/auth/update")
     public ResponseEntity<ResponseDto<Long>> update(
+            @RequestHeader("Authorization") String authorization,
             @RequestBody PostDto postDto
     ) {
         log.info("PostDto: {}", postDto);
@@ -101,17 +110,27 @@ public class PostController {
         HttpHeaders header = new HttpHeaders();
         header.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
 
-        Long postId = postService.modify(postDto);
-        dto.setStatusCode(StatusEnum.OK);
-        dto.setMessage("글 수정 성공");
-        dto.setData(postId);
+        String accessToken = authorization.substring(7);
+        Map<String, Object> values = jwtUtil.validateToken(accessToken);
+
+        String loginUserEmailId = values.get("user_id").toString();
+        if (loginUserEmailId.equals(postDto.getEmailId())) {
+            Long postId = postService.modify(postDto);
+            dto.setStatusCode(StatusEnum.OK);
+            dto.setMessage("글 수정 성공");
+            dto.setData(postId);
+        } else {
+            return new ResponseEntity<>(dto, header, HttpStatus.UNAUTHORIZED);
+        }
 
         return new ResponseEntity<>(dto, header, HttpStatus.OK);
     }
 
     // 글 삭제
-    @DeleteMapping("/{postId}")
-    public ResponseEntity<ResponseDto<Long>> delete(@PathVariable Long postId) {
+    @DeleteMapping("/auth/{postId}")
+    public ResponseEntity<ResponseDto<Long>> delete(
+            @RequestHeader("Authorization") String authorization,
+            @PathVariable Long postId) {
         log.info("PostId: {}", postId);
 
         ResponseDto<Long> dto = new ResponseDto<>();

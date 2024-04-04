@@ -28,17 +28,17 @@ public class TokenCheckFilter extends OncePerRequestFilter {
         // 클라이언트의 URI 확인
         String path = request.getRequestURI();
 
-        // '/v1'로 시작하지 않는 요청의 경우는 다음 필터로 넘기는데
+        // '/v1/auth'로 시작하지 않는 요청의 경우는 다음 필터로 넘기는데
         // 다음 필터로 넘길 때 반드시 return을 해야 한다.
         // return을 만날 때까지 무조건 수행
-        if (!path.startsWith("/auth")) {
+        if (!path.startsWith("/v1/auth")) {
             log.info("TokenCheckFilter 넘어감");
             filterChain.doFilter(request, response);
             return;
         }
 
         log.info("Token Check Filter..............");
-        log.info("JWTUtil: {}", jwtUtil);
+        log.info("JWTUtil: {}", jwtUtil.getClass());
 
         try {
             // 토큰의 유효성 검사
@@ -52,9 +52,11 @@ public class TokenCheckFilter extends OncePerRequestFilter {
 
     // 토큰의 유효성 검사를 위한 메서드
     private Map<String, Object> validateAccessToken(HttpServletRequest request) {
+
         // 헤더에서 토큰을 얻기
         String headerStr = request.getHeader("Authorization");
 
+        log.info(headerStr);
         // 토큰에 Bearer 라는 문자열을 포함시켜서 전송하기 때문에 토큰이 있으면 8자 이상이므로
         // 이 조건을 만족하지 않으면 예외 발생
         if (headerStr == null || headerStr.length() < 8) {
@@ -62,8 +64,11 @@ public class TokenCheckFilter extends OncePerRequestFilter {
         }
 
         // 실제 토큰 가져오기
+
         String tokenType = headerStr.substring(0, 6); // Bearer
         String tokenStr = headerStr.substring(7); // 실제 토큰 문자열
+
+        log.info(tokenStr);
 
         // 타입검사
         if (tokenType.equalsIgnoreCase("Bearer") == false) {

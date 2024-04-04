@@ -105,13 +105,6 @@ public class CustomSecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/**").permitAll() // /** -> / 로 바꿔주어야 함.
-                        .anyRequest().authenticated())
-                /*
-                .logout((logout) -> logout.logoutSuccessUrl("/login")
-                        .invalidateHttpSession(true))
-                 */
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();

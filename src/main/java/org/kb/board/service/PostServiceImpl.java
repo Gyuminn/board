@@ -11,6 +11,7 @@ import org.kb.board.dto.PostDto;
 import org.kb.board.dto.UserDto;
 import org.kb.board.repository.PostRepository;
 import org.kb.board.repository.ReplyRepository;
+import org.kb.board.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -31,13 +32,13 @@ public class PostServiceImpl implements PostService {
 
     private final ReplyRepository replyRepository;
 
+    private final UserRepository userRepository;
+
 
     // 게시글 등록하기
     public Long register(PostDto postDto) {
         log.info("Service - register: {}", postDto);
-        UserEntity userEntity = UserEntity.builder()
-                .userId(postDto.getUserId())
-                .build();
+        UserEntity userEntity= userRepository.findUserEntityByEmailId(postDto.getEmailId());
 
         PostEntity postEntity = PostEntity.builder()
                 .writer(userEntity)
