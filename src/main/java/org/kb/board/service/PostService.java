@@ -26,6 +26,7 @@ public interface PostService {
         PostDto dto = PostDto.builder()
                 .postId(postEntity.getPostId())
                 .userId(userEntity.getUserId())
+                .emailId(userEntity.getEmailId())
                 .title(postEntity.getTitle())
                 .content(postEntity.getContent())
                 .regDate(postEntity.getRegDate())

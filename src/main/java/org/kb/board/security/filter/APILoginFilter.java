@@ -41,7 +41,7 @@ public class APILoginFilter extends AbstractAuthenticationProcessingFilter {
         log.info("jsonData: {}", jsonData);
 
         // 아이디와 비밀번호를 다음 필터에 전송해서 사용하도록 설정
-        // APIUserDetailsService가 동작
+        // UserService 동작
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 jsonData.get("user_id"), jsonData.get("user_pw")
         );

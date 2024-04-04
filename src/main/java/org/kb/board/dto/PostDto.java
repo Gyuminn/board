@@ -21,6 +21,8 @@ public class PostDto {
 
     private Long userId;
 
+    private String emailId;
+
     private String title;
 
     private String content;
@@ -32,9 +34,10 @@ public class PostDto {
     private int replyCnt;
 
     @Builder
-    public PostDto(Long postId, Long userId, String title, String content, LocalDateTime regDate, LocalDateTime modDate, int replyCnt) {
+    public PostDto(Long postId, Long userId, String emailId, String title, String content, LocalDateTime regDate, LocalDateTime modDate, int replyCnt) {
         this.postId = postId;
         this.userId = userId;
+        this.emailId = emailId;
         this.title = title;
         this.content = content;
         this.regDate = regDate;

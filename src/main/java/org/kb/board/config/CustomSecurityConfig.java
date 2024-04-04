@@ -3,6 +3,7 @@ package org.kb.board.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kb.board.security.filter.APILoginFilter;
+import org.kb.board.security.filter.RefreshTokenFilter;
 import org.kb.board.security.filter.TokenCheckFilter;
 import org.kb.board.security.handler.APILoginSuccessHandler;
 import org.kb.board.service.UserServiceImpl;
@@ -63,11 +64,14 @@ public class CustomSecurityConfig {
         APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
         apiLoginFilter.setAuthenticationManager(authenticationManager);
 
-        // 필터가 먼저 동작하도록 설정
+        // 로그인 필터 적용
         http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // 토큰 검증 필터 적용
+        // Access 토큰 검증 필터 적용
         http.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+
+        // Refresh 토큰 검증 필터 적용
+        http.addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtUtil), TokenCheckFilter.class);
 
         // APILoginFilter 다음에 동작할 핸들러 설정
         // 로그인 성공과 실패에 따른 핸들러를 설정할 수 있음.
