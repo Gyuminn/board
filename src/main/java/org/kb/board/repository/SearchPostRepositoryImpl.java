@@ -5,6 +5,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import org.kb.board.domain.*;
+import org.kb.board.dto.PostDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -121,5 +122,83 @@ public class SearchPostRepositoryImpl extends QuerydslRepositorySupport implemen
             resultList.add(t.toArray());
         }
         return new PageImpl<Object[]>(resultList, pageable, tuple.fetchCount());
+    }
+
+    public List<PostDto> searchAll(String type, String keyword) {
+        QPostEntity postEntity = QPostEntity.postEntity;
+        QUserEntity userEntity = QUserEntity.userEntity;
+
+        JPQLQuery<PostEntity> jpqlQuery = from(postEntity);
+        jpqlQuery.leftJoin(userEntity).on(postEntity.writer.eq(userEntity));
+
+        JPQLQuery<Tuple> tuple = jpqlQuery.select(postEntity, userEntity);
+
+        // 조건 생성
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        BooleanExpression expression = postEntity.postId.gt(0L); // postId가 0보다 큰
+        booleanBuilder.and(expression);
+
+        // 타입에 따른 조건 생성
+        // 제목 검색 - t
+        // 작성자 검색 - w
+        // 내용 검색 - c
+        // 재목 + 내용 검색: tc
+        // 제목 + 작성자 검색: tw
+        if (type != null) {
+            // 글자 단위로 쪼객
+            String[] typeArr = type.split("");
+            BooleanBuilder conditionBuilder = new BooleanBuilder();
+            for (String t : typeArr) {
+                switch(t) {
+                    case "t":
+                        conditionBuilder.or(postEntity.title.contains(keyword));
+                        break;
+                    case "c":
+                        conditionBuilder.or(postEntity.content.contains(keyword));
+                        break;
+                    case "w":
+                        conditionBuilder.or(userEntity.emailId.contains(keyword));
+                        break;
+                }
+            }
+            booleanBuilder.and(conditionBuilder);
+        }
+
+        // 조건을 tuple에 적용
+        tuple.where(booleanBuilder);
+
+        // 정렬 방법 설정
+        tuple.orderBy(postEntity.postId.desc());
+
+        // 그룹화
+        tuple.groupBy(postEntity);
+
+        // 데이터 가져오기
+        List<Tuple> result = tuple.fetch();
+
+        List<Object[]> resultList = new ArrayList<>();
+        for (Tuple t : result) {
+            resultList.add(t.toArray());
+        }
+
+        List<PostDto> postDtoList = new ArrayList<>();
+        for (Tuple t : result) {
+            Object[] row = t.toArray();
+            PostEntity postEntity1 = (PostEntity) row[0];
+            UserEntity userEntity1 = (UserEntity) row[1];
+
+            PostDto postDto = PostDto.builder()
+                    .postId(postEntity1.getPostId())
+                    .title(postEntity1.getTitle())
+                    .content(postEntity1.getContent())
+                    .regDate(postEntity1.getRegDate())
+                    .modDate(postEntity1.getModDate())
+                    .emailId(userEntity1.getEmailId())
+                    .build();
+
+            postDtoList.add(postDto);
+        }
+
+        return postDtoList;
     }
 }

@@ -1,20 +1,31 @@
 package org.kb.board.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.kb.board.dto.PostDto;
+import org.kb.board.repository.PostRepository;
+import org.kb.board.repository.SearchPostRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ExcelDownloadService {
-    public byte[] downloadPostsAsExcel(List<PostDto> posts) {
+    private final PostRepository postRepository;
+
+    public byte[] downloadPostsAsExcel(String type, String keywords) {
+
+
+        List<PostDto> posts = postRepository.searchAll(type, keywords);
+
         // 엑셀 워크북 생성
         try (Workbook workbook = new XSSFWorkbook()) {
             // 시트 생성

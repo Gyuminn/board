@@ -4,8 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.kb.board.domain.PostEntity;
 import org.kb.board.domain.ReplyEntity;
 import org.kb.board.domain.UserEntity;
+import org.kb.board.dto.PostDto;
 import org.kb.board.repository.PostRepository;
 import org.kb.board.repository.ReplyRepository;
+import org.kb.board.repository.SearchPostRepository;
 import org.kb.board.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,6 +38,7 @@ public class RepositoryTests {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
 
     @Test
     // 회원 데이터 삽입
@@ -215,5 +218,11 @@ public class RepositoryTests {
 
         boolean result = passwordEncoder.matches("1111", userEntity.getPassword());
         System.out.println(result);
+    }
+
+    @Test
+    public void searchAllTest() {
+        List<PostDto> result = postRepository.searchAll("c", "ㅋ");
+        System.out.println(result.toString());
     }
 }

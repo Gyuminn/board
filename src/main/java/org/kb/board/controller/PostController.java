@@ -29,7 +29,6 @@ import java.util.Map;
 @RequestMapping("/v1")
 public class PostController {
     private final PostService postService;
-    private final ExcelDownloadService excelDownloadService;
     private final JWTUtil jwtUtil;
 
     // 글 작성하기
@@ -80,24 +79,6 @@ public class PostController {
         dto.setData(newPageResponseDto);
 
         return new ResponseEntity<>(dto, header, HttpStatus.OK);
-    }
-
-    @GetMapping({"/posts/download"})
-    public ResponseEntity<byte[]> downloadPostsAsExcel() {
-        PageRequestDto pageRequestDto = PageRequestDto.builder()
-                .page(1)
-                .size(10).
-                build();
-        PageResponseDto<PostDto, Object[]> newPageResponseDto = postService.getList(pageRequestDto);
-        List<PostDto> postDtoList = newPageResponseDto.getDtoList();
-
-        byte[] excelContent = excelDownloadService.downloadPostsAsExcel(postDtoList);
-
-        HttpHeaders header = new HttpHeaders();
-        header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        header.setContentDispositionFormData("attachment", "posts.xlsx");
-
-        return new ResponseEntity<>(excelContent, header, HttpStatus.OK);
     }
 
     // 글 단건 조회
